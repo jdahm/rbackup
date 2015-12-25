@@ -1,0 +1,8 @@
+[Unit]
+Description=backup via rsnapshot
+
+[Service]
+Type=oneshot
+Nice=19
+IOSchedulingClass=3
+ExecStart=/usr/local/bin/do_backup
