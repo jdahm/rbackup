@@ -1,0 +1,14 @@
+execdir=/usr/local/bin
+sysddir=/etc/systemd/system
+
+all: install
+install: install_exec install_service
+
+.PHONY: install_exec
+install_exec: rbackup
+	cp $< $(execdir)
+
+# Corresonding execdir in service file must change if edited above.
+.PHONY: install_service
+install_service: backup.service backup.timer
+	cp $^ $(sysddir)

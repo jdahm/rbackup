@@ -1,5 +1,5 @@
 [Unit]
-Description=Run backup hourly
+Description=Run rbackup
 
 [Timer]
 OnBootSec=15min
