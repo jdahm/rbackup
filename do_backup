@@ -22,6 +22,7 @@ snapshot_root=$(awk '/^snapshot_root/{print $2}' < $rconf)
 
 if [ ! -d $snapshot_root ]; then
     echo_log "$snapshot_root does not exist. Exiting..."
+    exit 1
 fi
 
 intervals=( $(awk '/^interval|^retain/{print $2}' < $rconf) )
