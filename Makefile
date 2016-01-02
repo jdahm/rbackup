@@ -10,5 +10,6 @@ install_exec: rbackup
 
 # Corresonding execdir in service file must change if edited above.
 .PHONY: install_service
-install_service: backup.service backup.timer
+install_service: rbackup.service rbackup.timer
+	mkdir -p /usr/local/share/rbackup
 	cp $^ $(sysddir)
