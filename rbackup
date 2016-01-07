@@ -46,15 +46,15 @@ while [[ $1 ]]; do
 done
 
 # Check inputs
-[ ! -r $conf ] && echo_error $conf is not readable
+[ ! -r "$conf" ] && echo_error "$conf" is not readable
 
 # Get snapshot root
-root=$(awk '/^snapshot_root/{print $2}' < $conf)
-[ ! -d $root ] && echo_error $root does not exist
+root=$(awk '/^snapshot_root/{print $2}' < "$conf")
+[ ! -d "$root" ] && echo_error $root does not exist
 
 # Assign default dat and log file locations if not already specified
-[ -z "${datfile}" ] && datfile=${root}/rbackup.dat
-[ -z "${logfile}" ] && logfile=${root}/rbackup.log
+[ -z "${datfile}" ] && datfile="${root}"/rbackup.dat
+[ -z "${logfile}" ] && logfile="${root}"/rbackup.log
 
 echo_log() {
     echo $(date): "$*" >> $logfile
@@ -62,16 +62,16 @@ echo_log() {
 
 update_time() {
     newdat="$1 $(get_time) # $(date)"
-    line=$(grep $1 $datfile)
+    line=$(grep "$1" "$datfile")
     if [ -n "$line" ]; then
-        sed -i 's/${1}.*$/${new_line}/' $datfile
+        sed -i "s/${1}.*$/${newdat}/" "$datfile"
     else
-        echo $newdat >> $datfile
+        echo "$newdat" >> "$datfile"
     fi
 }
 
 get_last_time() {
-    line=$(grep $1 $datfile)
+    line=$(grep $1 "$datfile")
     if [ -n "$line" ]; then
         echo $(awk '{ print $2 }' <<< "$line")
     else
@@ -80,12 +80,12 @@ get_last_time() {
 }
 
 # Begin a new datfile if necessary
-if [ ! -f $datfile ]; then
+if [ ! -f "$datfile" ]; then
     echo "# The values below are overwritten when backing up." > $datfile
 fi
 
 # Get intervals
-intervals=( $(awk '/^interval|^retain/{print $2}' < $conf) )
+intervals=( $(awk '/^interval|^retain/{print $2}' < "$conf") )
 [ "${#intervals[@]}" -eq 0 ] && echo_error No intervals detected
 
 # Exit if rsnapshot is not executable (cannot backup!)
@@ -96,7 +96,7 @@ for i in "${intervals[@]}"; do
     interval_time=$(get_interval $i)
     last_backup_time=$(get_last_time $i)
     current_time=$(get_time)
-    if [ $(($current_time-$last_backup_time)) -gt $interval_time ]; then
+    if [ $(($current_time - $last_backup_time)) -gt $interval_time ]; then
         echo_log last $i was $(date -d @${last_backup_time}), backing up now
         $rsnapshot -c $conf $i
         update_time $i
