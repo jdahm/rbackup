@@ -96,7 +96,7 @@ for i in "${intervals[@]}"; do
     interval_time=$(get_interval $i)
     last_backup_time=$(get_last_time $i)
     current_time=$(get_time)
-    if [ $(($current_time - $last_backup_time)) -gt $interval_time ]; then
+    if [ $(($current_time - $last_backup_time)) -ge $interval_time ]; then
         echo_log last $i was $(date -d @${last_backup_time}), backing up now
         $rsnapshot -c $conf $i
         update_time $i
