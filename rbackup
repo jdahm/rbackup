@@ -56,6 +56,10 @@ root=$(awk '/^snapshot_root/{print $2}' < "$conf")
 [ -z "${datfile}" ] && datfile="${root}"/rbackup.dat
 [ -z "${logfile}" ] && logfile="${root}"/rbackup.log
 
+get_option() {
+    grep -E "^[[:space:]]*$1" $conf | awk '{ print $2 }'
+}
+
 echo_log() {
     echo $(date): "$*" >> $logfile
 }
@@ -99,6 +103,8 @@ for i in "${intervals[@]}"; do
     if [ $(($current_time - $last_backup_time)) -ge $interval_time ]; then
         echo_log last $i was $(date -d @${last_backup_time}), backing up now
         update_time $i
+        sync_first=$(get_option sync_first)
+        [ $sync_first = "1" ] && $rsnapshot -c $conf sync
         $rsnapshot -c $conf $i
     fi
 done

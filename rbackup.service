@@ -5,4 +5,4 @@ Description=Backup via rsnapshot - as necessary
 Type=oneshot
 Nice=19
 IOSchedulingClass=3
-ExecStart=/usr/local/bin/rbackup -d /usr/local/share/rbackup/rbackup.dat -l /usr/local/share/rbackup/rbackup.log
+ExecStart=/usr/local/bin/rbackup
