@@ -48,17 +48,18 @@ done
 # Check inputs
 [ ! -r "$conf" ] && echo_error "$conf" is not readable
 
-# Get snapshot root
-root=$(awk '/^snapshot_root/{print $2}' < "$conf")
+# Get an option from the conf file
+get_option() {
+    grep -E "^[[:space:]]*$1" $conf | awk '{ print $2 }'
+}
+
+# Get snapshot root (Cannot contain spaces!)
+root=$(get_option snapshot_root)
 [ ! -d "$root" ] && echo_error $root does not exist
 
 # Assign default dat and log file locations if not already specified
 [ -z "${datfile}" ] && datfile="${root}"/rbackup.dat
 [ -z "${logfile}" ] && logfile="${root}"/rbackup.log
-
-get_option() {
-    grep -E "^[[:space:]]*$1" $conf | awk '{ print $2 }'
-}
 
 echo_log() {
     echo $(date): "$*" >> $logfile
